@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 var ffmpeg = require('fluent-ffmpeg');
 const { Video } = require("../models/Video");
-
+const { Subscriber }  = require("../models/Subscriber");
 const { auth } = require("../middleware/auth");
 
 
@@ -67,6 +67,38 @@ router.get('/getVideos', (req, res) => {
               if(err) return res.status(400).send(err);
               res.status(200).json({success: true, videos})
           })
+    
+
+})
+
+router.post('/getSubscriptionVideo', (req, res) => {
+   
+    // 자신의 아이디를 가지고 구독하는 사람들을 찾는다.
+    Subscriber.find({userFrom: req.body.userFrom})
+    .exec((err, subscriberInfo) => {
+        if(err) return res.status(400).send(err);
+
+        let SubscribedUser = [];
+
+        //구독채널들의 정보 map으로 돌려 모두 저장
+        subscriberInfo.map((subscriber, i) => {
+            SubscribedUser.push(subscriber.userTo);
+        })
+
+        // 찾은 구독 채널의 주인들의 비디오를 가지고 온다.
+        // $in은 몽고DB의 기능으로 하나가 아닌 여러명의 id을 가지고 복수의
+        //writer들을 찾을 수 있게 되었다. 
+        Video.find({writer : {$in :SubscribedUser }})
+        .populate('writer')
+        .exec((err, videos) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({success: true, videos})
+        })
+
+
+    })
+
+
     
 
 })
