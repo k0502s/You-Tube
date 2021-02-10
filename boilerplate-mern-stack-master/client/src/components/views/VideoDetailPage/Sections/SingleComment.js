@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { Comment, Avatar, Button, Input} from 'antd';
 import { useSelector } from 'react-redux' //리덕스에서 user 정보 가져옴
+import LikeDislikes from './LikeDislikes'
 import Axios from 'axios'
 
 const { TextArea } = Input;
@@ -17,7 +18,7 @@ function SingleComment(props) {
     }
 
     const onHandleChange = (e) => {
-        setCommentValue(e.currentTarget.CommentValue)
+        setCommentValue(e.currentTarget.value)
     }
 
     const onSubmit = (e) => {
@@ -35,7 +36,8 @@ function SingleComment(props) {
       .then(response => {
           if(response.data.success){
                console.log(response.data.result)
-               setCommentValue("")
+               setCommentValue("") //댓글 전송 후 다시 빈칸 초기화
+               setOpenReply(false) // 댓글 전송 후 댓글창 닫아지기
                props.refreshFunction(response.data.result)
           }else {
             alert('댓글을 저장하지 못했습니다.')
@@ -47,7 +49,7 @@ function SingleComment(props) {
 
 
     const actions = [
-        <span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply to</span>
+     <LikeDislikes userId={localStorage.getItem('userId')} commentId={props.comment._id}/>, <span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply to</span>
     ]
     return (
         <div>

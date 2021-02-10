@@ -1,9 +1,10 @@
 import React, {useEffect, useState } from 'react'
-import { Row, Col, List, Avatar} from 'antd';
+import { Row, Col, List, Avatar, Button} from 'antd';
 import Axios from 'axios';
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
 import Comment from './Sections/Comment';
+import LikeDislikes from './Sections/LikeDislikes';
 
 
 function VideoDetailPage(props) {
@@ -47,6 +48,19 @@ function VideoDetailPage(props) {
     }
 
 
+
+    const deletevideo = () => {
+        Axios.post('/api/video/getVideoDetailDelete', variable)
+        .then(response => {
+            if (response.data.success) {
+                props.history.push('/')
+            } else {
+                alert('동영상 삭제 실패.')
+            }
+        })
+    }
+
+
     if(VideoDetail.writer){
 
         const subscribeButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')}/>
@@ -58,7 +72,7 @@ function VideoDetailPage(props) {
                     <video style={{width: '100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
     
                     <List.Item
-                    actions={[subscribeButton]}
+                    actions={[<LikeDislikes video userId={localStorage.getItem('userId')} videoId={videoId}/>, subscribeButton]}
                     >
                         <List.Item.Meta
                         avatar={<Avatar src={VideoDetail.writer.image}/>}
@@ -67,7 +81,20 @@ function VideoDetailPage(props) {
                         />
     
                     </List.Item>
-    
+                    {VideoDetail.writer._id === localStorage.getItem('userId') && 
+                     <Button onClick={deletevideo}>
+                     삭제
+                   </Button>
+                   }
+                     
+                   
+                    {/* <Button
+                       to={"/Update/" + videoId._id}
+                      className="badge badge-warning"
+                     >
+                     Edit
+                     </Button> */}
+                   
                     {/*Comments*/}
                     <Comment refreshFunction={refreshFunction} commentLists={Comments} postId={videoId}/>
                </div>
@@ -80,6 +107,7 @@ function VideoDetailPage(props) {
                </Col>
                
                </Row>
+            
             
         )
     } else {

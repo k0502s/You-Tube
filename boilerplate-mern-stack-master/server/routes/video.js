@@ -116,6 +116,18 @@ router.post('/getVideoDetail', (req, res) => {
 });
 
 
+router.post('/getVideoDetailDelete', (req, res) => {
+   
+    Video.remove({"_id" : req.body.videoId })
+     .exec((err) => {
+        if(err) return res.status(400).send(err);
+        return res.status(200).json({ success: true})
+    })
+
+});
+
+
+
 router.post('/thumbnail', (req, res) => {
 
 

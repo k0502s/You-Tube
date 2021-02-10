@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import Axios from 'axios'
 import { useSelector } from 'react-redux' //리덕스에서 user 정보 가져옴
 import SingleComment from '../Sections/SingleComment'
+import ReplyComment from '../Sections/ReplyComment'
 
 function Comment(props) {
 
@@ -10,13 +11,13 @@ function Comment(props) {
     const user = useSelector(state => state.user); //리덕스에서 user 정보 가져옴
     const [commentValue, setcommentValue] = useState("")
 
-const handleClick = (e) => {
+    const handleClick = (e) => {
     setcommentValue(e.currentTarget.value)
 }
 
 
-const onSubmit = (e) => {
-  e.preventDefault();
+    const onSubmit = (e) => {
+         e.preventDefault();
 
     const variables = {
         content: commentValue,
@@ -45,12 +46,12 @@ const onSubmit = (e) => {
             {/*Comment Lists */}
 
             {props.commentLists && props.commentLists.map((comment, index) => (
-         (!comment.responseTo && 
+             (!comment.responseTo && 
             <React.Fragment key={comment._id}>
-         <SingleComment refreshFunction={props.refreshFunction} comment={comment} postId={videoId} />
-         </React.Fragment>
+                <SingleComment refreshFunction={props.refreshFunction} comment={comment} postId={videoId} />
+                <ReplyComment refreshFunction={props.refreshFunction} parentCommentId={comment._id} postId={videoId} commentLists={props.commentLists} />
+             </React.Fragment>
          )
-            
             ))}
 
             

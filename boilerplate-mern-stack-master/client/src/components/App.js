@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Link } from "react-router-dom";
 import Auth from "../hoc/auth";
 // pages for this product
 import LandingPage from "./views/LandingPage/LandingPage.js";
@@ -10,6 +10,7 @@ import Footer from "./views/Footer/Footer"
 import VideoUploadPage from "./views/VideoUploadPage/VideoUploadPage"
 import VideoDetailPage from "./views/VideoDetailPage/VideoDetailPage"
 import SubscriptionPage from "./views/SubscriptionPage/SubscriptionPage"
+// import UpdatePage from "./views/UpdatePage/UpdatePage"
 
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route exact path="/video/upload" component={Auth(VideoUploadPage, true)} />
           <Route exact path="/video/:videoId" component={Auth(VideoDetailPage, null)} />
           <Route exact path="/subscription" component={Auth(SubscriptionPage, null)} />
+          {/* <Route exact path="/update/:id" component={Auth(UpdatePage, null)} /> */}
         </Switch>
       </div>
       <Footer />

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { FaCode } from "react-icons/fa";
-import { Card, Avatar, Col, Typography, Row } from 'antd';
+import { Card, Avatar, Col, Typography, Row} from 'antd';
 import Axios from 'axios';
 import moment from 'moment';
 import '../../../index.css';
@@ -9,9 +9,11 @@ const { Title } = Typography;
 const { Meta } = Card;
 
 
-function LandingPage() {
+function LandingPage(props) {
 
 const [Video, setVideo] = useState([])
+
+
 
     useEffect(() => {
 
@@ -72,7 +74,6 @@ const [Video, setVideo] = useState([])
 
 
          </Row>
-
         </div>
     )
 }
