@@ -1,5 +1,6 @@
 import React, {useEffect, useState } from 'react'
 import { Row, Col, List, Avatar, Button} from 'antd';
+import { Link } from "react-router-dom";
 import Axios from 'axios';
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
@@ -19,7 +20,7 @@ function VideoDetailPage(props) {
 
 
     useEffect(() => {
-
+        //컴포넌트 실행되면 바로 id값을 토대로 비디오 정보들 가져온다.
         Axios.post('/api/video/getVideoDetail', variable)
             .then(response => {
                 if (response.data.success) {
@@ -29,7 +30,7 @@ function VideoDetailPage(props) {
                     alert('비디오 가져오기 실패')
                 }
             })
-
+            //댓글 또한 id값을 토대로 가져온다.
         Axios.post('/api/comment/getComments', variable)
         .then(response => {
             if(response.data.success){
@@ -42,13 +43,13 @@ function VideoDetailPage(props) {
 
     }, [])
 
-    
+    //댓글 작성 후 submit 후 자동으로 초기화 시켜주어 댓글 바로 등장하게 함.
     const refreshFunction = (newComment) => {
         setComments(Comments.concat(newComment))
     }
 
 
-
+    //비디오 삭제
     const deletevideo = () => {
         Axios.post('/api/video/getVideoDetailDelete', variable)
         .then(response => {
@@ -60,10 +61,14 @@ function VideoDetailPage(props) {
         })
     }
 
+    
+
 
     if(VideoDetail.writer){
-
-        const subscribeButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')}/>
+          //현재 로그인한 유저 정보와 비디오를 업로드한 유저정보가 일치 불일치에 따른 기능의 존재 유무설정가능.
+        const subscribeButton = VideoDetail.writer._id !== localStorage.getItem('userId') && 
+        //만약 업로드한 유저와 현재 로그인 한 유저가 같다면 구독 버튼 사라지게 하였다.
+        <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')}/>
         return (
 
                <Row gutter={[16, 16]}>
@@ -87,15 +92,16 @@ function VideoDetailPage(props) {
                    </Button>
                    }
                      
-                   
-                    {/* <Button
-                       to={"/Update/" + videoId._id}
+                     {VideoDetail.writer._id === localStorage.getItem('userId') &&
+                    <Link
+                       to={"/Update/" + videoId}
                       className="badge badge-warning"
                      >
-                     Edit
-                     </Button> */}
+                     편집
+                     </Link>
+                    }
                    
-                    {/*Comments*/}
+                    {/* Comments*/}{/*Comment 콤퍼넌트에 비디오에 관한 여러 정보들을 porps로 보내줌. */}
                     <Comment refreshFunction={refreshFunction} commentLists={Comments} postId={videoId}/>
                </div>
                

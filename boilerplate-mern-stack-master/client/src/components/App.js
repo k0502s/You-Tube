@@ -10,7 +10,7 @@ import Footer from "./views/Footer/Footer"
 import VideoUploadPage from "./views/VideoUploadPage/VideoUploadPage"
 import VideoDetailPage from "./views/VideoDetailPage/VideoDetailPage"
 import SubscriptionPage from "./views/SubscriptionPage/SubscriptionPage"
-// import UpdatePage from "./views/UpdatePage/UpdatePage"
+import UpdatePage from "./views/UpdatePage/UpdatePage"
 
 
 
@@ -30,7 +30,7 @@ function App() {
           <Route exact path="/video/upload" component={Auth(VideoUploadPage, true)} />
           <Route exact path="/video/:videoId" component={Auth(VideoDetailPage, null)} />
           <Route exact path="/subscription" component={Auth(SubscriptionPage, null)} />
-          {/* <Route exact path="/update/:id" component={Auth(UpdatePage, null)} /> */}
+          <Route exact path="/update/:videoId" component={Auth(UpdatePage, null)} />
         </Switch>
       </div>
       <Footer />

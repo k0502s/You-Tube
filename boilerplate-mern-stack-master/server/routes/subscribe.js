@@ -7,6 +7,7 @@ const { Subscriber } = require("../models/Subscriber");
 //            Subscribe
 //================================
 
+//구독자 수 처리
 router.post('/subscribeNumber', (req, res) => {
    
     Subscriber.find({'userTo': req.body.userTo})
@@ -18,7 +19,7 @@ router.post('/subscribeNumber', (req, res) => {
 
 })
 
-
+//구독한 정보을 id값을 토대로 찾아 클라이언트로 보내줌
 router.post('/subscribed', (req, res) => {
     Subscriber.find({ 'userTo': req.body.userTo, 'userFrom': req.body.userFrom})
     .exec((err, subscribe) => {
@@ -32,7 +33,7 @@ router.post('/subscribed', (req, res) => {
    
 })
 
-
+//구독 취소 처리
 router.post('/unSubscribe', (req, res) => {
    
     Subscriber.findOneAndDelete({userTo:req.body.userTo, userFrom: req.body.userFrom})
@@ -44,7 +45,7 @@ router.post('/unSubscribe', (req, res) => {
 });
 
 
-
+//새롭게 구독 처리 해줌.
 router.post('/subscribe', (req, res) => {
 
     const subscribe =new Subscriber(req.body)

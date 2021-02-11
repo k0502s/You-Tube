@@ -16,7 +16,7 @@ const [Video, setVideo] = useState([])
 
 
     useEffect(() => {
-
+        //DB에 저장된 비디오들 다 불러온다.
         Axios.get('/api/video/getVideos')
         .then(response => {
             if(response.data.success){
@@ -30,7 +30,7 @@ const [Video, setVideo] = useState([])
 
     }, []) //[]이면 딱 한 번 실행, [] 없으면 계속 실행되버림
 
-
+//불러온 비디오들을 map을 이용하여 뿌려준다. 그리고 변수화하여 모듈화
     const renderCards = Video.map((video, index) => {
 
         var minutes = Math.floor(video.duration / 60);
@@ -58,8 +58,6 @@ const [Video, setVideo] = useState([])
        <span style={{ marginLeft: '3rem' }}> {video.views} views</span> 
        - <span> {moment(video.createdAt).format("MMM Do YY")} </span>
    </Col>
-
-
     })
 
     return (
@@ -68,7 +66,7 @@ const [Video, setVideo] = useState([])
             <Title level={2}>Recommended</Title>
          <hr />
          <Row gutter={[32, 16]}>
-         {renderCards}
+         {renderCards} {/*모듈화한 비디오 정보를 보여주는 코드를 담은 변수를 여기에 적용 */}
             
 
 

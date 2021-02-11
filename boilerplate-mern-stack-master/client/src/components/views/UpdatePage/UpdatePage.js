@@ -16,19 +16,20 @@ const PrivateOptions = [
 
 const CatogoryOptions = [
     { value: 0, label: "Film & Animation" },
-    { value: 0, label: "Autos & Vehicles" },
-    { value: 0, label: "Music" },
-    { value: 0, label: "Pets & Animals" },
-    { value: 0, label: "Sports" },
+    { value: 1, label: "Autos & Vehicles" },
+    { value: 2, label: "Music" },
+    { value: 3, label: "Pets & Animals" },
+    { value: 4, label: "Sports" },
 ]
-
-
-
 
 
 
 function VideoUploadPage(props) {
 
+    const videoId = props.match.params.videoId 
+
+    const variable = { videoId: videoId } 
+    
     const user = useSelector(state => state.user);
     const [VideoTitle, setVideoTitle] = useState("")
     const [Description, setDescription] = useState("")
@@ -37,6 +38,7 @@ function VideoUploadPage(props) {
     const [FilePath, setFilePath] = useState("")
     const [Duration, setDuration] = useState("")
     const [ThumbnailPath, setThumbnailPath] = useState("")
+    
     
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value)
@@ -53,6 +55,26 @@ function VideoUploadPage(props) {
     const onCatogoryChange = (e) => {
         setCategory(e.currentTarget.value)
     }
+
+    useEffect(() => {
+
+        Axios.post('/api/video/getVideoDetail', variable)
+            .then(response => {
+                if (response.data.success) {
+                    console.log(response.data.videoDetail)
+                    setVideoTitle(response.data.videoDetail.title)
+                    setDescription(response.data.videoDetail.description)
+                    setPrivate(response.data.videoDetail.privacy)
+                    setCategory(response.data.videoDetail.Category)
+                    setFilePath(response.data.videoDetail.FilePath)
+                    setDuration(response.data.videoDetail.duration)
+                    setThumbnailPath(response.data.videoDetail.thumbnail)
+                } else {
+                    alert('비디오 가져오기 실패')
+                }
+            })
+
+    }, [])
 
     const onDrop = (files) => {
 
@@ -93,10 +115,14 @@ function VideoUploadPage(props) {
         })
     }
 
-    const onSumit = (e) => {
+   
+
+    const updateVideo = (e) => {
         e.preventDefault();
+ 
 
         const variables = {
+            videoId: videoId,
             writer: user.userData._id,
             title: VideoTitle,
             description: Description,
@@ -107,22 +133,20 @@ function VideoUploadPage(props) {
             thumbnail: ThumbnailPath
         }
 
-        Axios.post('/api/video/uploadVideo', variables)
-        .then(response => {
+        
+
+        Axios.put('/api/video/videoUpdate', variables, variables)
+          .then(response => {
             if(response.data.success){
-                 console.log(response.data)
-                message.success('업로드 성공.')
-
-                setTimeout(() => {
-                    props.history.push("/")
-                }, 3000);
-
-
-            } else {
-                alert('업로드 실패.')
-            }
-        })
-
+            console.log(response.data);
+            message.success('업로드 성공.')
+            setTimeout(() => {
+                 props.history.push("/")
+                    }, 3000);
+                }else {
+                  alert('업로드 실패.')
+                   }
+      })
     }
 
 
@@ -131,10 +155,10 @@ function VideoUploadPage(props) {
         <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
             {/*드랍 존*/}
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <Title level={2} > Upload Video</Title>
+                <Title level={2} > Update Video</Title>
             </div>
 
-            <Form onSubmit={onSumit}>
+            <Form onSubmit={updateVideo}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Dropzone
               onDrop={onDrop}
@@ -195,7 +219,7 @@ function VideoUploadPage(props) {
              <br />
              <br />
 
-            <Button type="primary" size="large" onClick={onSumit}>
+            <Button type="primary" size="large" onClick={updateVideo}>
                 submit        
             </Button>
             </Form>

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import { FaCode } from "react-icons/fa";
 import { Card, Avatar, Col, Typography, Row } from 'antd';
 import Axios from 'axios';
 import moment from 'moment';
@@ -13,11 +12,11 @@ function SubscriptionPage() {
     const [Video, setVideos] = useState([])
 
     useEffect(() => {
-
+        //localStorage을 이용하여 유저 id 가여옴
         const subscriptionVariable = {
             userFrom : localStorage.getItem('userId')
         }
-
+        //유저 id을 토대로 구독한 채널의 영상들을 가져옴
         Axios.post('/api/video/getSubscriptionVideo', subscriptionVariable)
         .then(response => {
             if(response.data.success){
@@ -30,7 +29,7 @@ function SubscriptionPage() {
 
 
     }, []) 
-
+    //아래부터는 랜딩 페이지와 같다.
     const renderCards = Video.map((video, index) => {
 
         var minutes = Math.floor(video.duration / 60);

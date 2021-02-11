@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Typography, Button, Form, message, Input, Icon } from 'antd';
 import Dropzone from 'react-dropzone';
 import Axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux'; //리덕스를 통해 유저 정보 가져옴
 
 
 const { Title } = Typography;
@@ -16,10 +16,10 @@ const PrivateOptions = [
 
 const CatogoryOptions = [
     { value: 0, label: "Film & Animation" },
-    { value: 0, label: "Autos & Vehicles" },
-    { value: 0, label: "Music" },
-    { value: 0, label: "Pets & Animals" },
-    { value: 0, label: "Sports" },
+    { value: 1, label: "Autos & Vehicles" },
+    { value: 2, label: "Music" },
+    { value: 3, label: "Pets & Animals" },
+    { value: 4, label: "Sports" },
 ]
 
 
@@ -29,7 +29,7 @@ const CatogoryOptions = [
 
 function VideoUploadPage(props) {
 
-    const user = useSelector(state => state.user);
+    const user = useSelector(state => state.user);//리덕스를 통해 가져온 유저 정보 변수화
     const [VideoTitle, setVideoTitle] = useState("")
     const [Description, setDescription] = useState("")
     const [Private, setPrivate] = useState(0)
@@ -53,7 +53,7 @@ function VideoUploadPage(props) {
     const onCatogoryChange = (e) => {
         setCategory(e.currentTarget.value)
     }
-
+    //업로드 영상 드랍시 실행
     const onDrop = (files) => {
 
         let formData = new FormData();
@@ -66,19 +66,20 @@ function VideoUploadPage(props) {
         .then(response => {
             if(response.data.success){
                console.log(response.data)
-
+                //서버에서 업로드 영상 파일의 파일 경로의 url 및 이름을 받아옴
                let variable = {
                    url:response.data.url,
                    fileName: response.data.fileName
                }
 
-               
+               //state 값에 업로드 영상파일이 있는 파일 경로 url 담아줌
                setFilePath(response.data.url)
 
-
+               //업로드할 영상 이름과 업로드 영상파일이 있는 파일 경로 url을 서버에 보내 해당 영상 썸내일 찾아옴
                Axios.post('/api/video/thumbnail', variable)
                .then(response => {
                    if(response.data.success){
+                    //찾아온 썸내일 정보들을 state 값으로 넣어줌
                     setDuration(response.data.fileDuration)
                     setThumbnailPath(response.data.url)
                    }else {
@@ -93,11 +94,13 @@ function VideoUploadPage(props) {
         })
     }
 
+
+    //전송버튼 실행
     const onSumit = (e) => {
         e.preventDefault();
 
         const variables = {
-            writer: user.userData._id,
+            writer: user.userData._id, //유저 정보 담아줌
             title: VideoTitle,
             description: Description,
             privacy: Private,
@@ -106,7 +109,7 @@ function VideoUploadPage(props) {
             duration: Duration,
             thumbnail: ThumbnailPath
         }
-
+        //받은 유저 정보와 입력한 폼에서 얻은 값을 서버에 보내주어 업로드한다.
         Axios.post('/api/video/uploadVideo', variables)
         .then(response => {
             if(response.data.success){
@@ -129,6 +132,8 @@ function VideoUploadPage(props) {
 
     return (
         <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
+
+            
             {/*드랍 존*/}
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <Title level={2} > Upload Video</Title>
@@ -150,6 +155,8 @@ function VideoUploadPage(props) {
                  </div>
                 )}
             </Dropzone>
+
+
             {/*썸네일*/}
                 {ThumbnailPath && 
                  <div>
