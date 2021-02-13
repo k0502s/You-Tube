@@ -8,6 +8,7 @@ function SideVideo() {
 
 useEffect(() => {
 
+    //일단 비디오 정보 서버에 요청해서 모두 가져오기
     Axios.get('/api/video/getVideos')
     .then(response => {
         if(response.data.success){
@@ -20,7 +21,7 @@ useEffect(() => {
   
 }, [])
 
-
+//서버에서 가져온 모든 비디오 정보들을 map을 사용하여 돌려준 것을 변수화
 const renderSideVideo = sideVideos.map((video, index) => {
 
 
@@ -48,7 +49,7 @@ const renderSideVideo = sideVideos.map((video, index) => {
 
     <React.Fragment>
         <div style={{marginTop: '3rem'}} />
-        {renderSideVideo}
+        {renderSideVideo}{/* map으로 돌려준 사이드 비디오 정보들을 변수화 한 것을 여기에  */}
 
     </React.Fragment>
 
